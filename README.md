@@ -5,5 +5,11 @@
 
 NFive Plugin
 
+Currently Only Supports:
+- Spawning Vehicles - /car (vehicle name)
+- Delete Current Vehicle You Are In - /dv
+- Noclip - /noclip (a bit buggy)
+
+
 ## Installation
 Install the plugin into your server from the [NFive Hub](https://hub.nfive.io/BattleRatttt/plugin-admin): `nfpm install BattleRatttt/plugin-admin`
