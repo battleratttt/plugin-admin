@@ -70,7 +70,7 @@ deploy:
   release: $(APPVEYOR_REPO_TAG_NAME)
   provider: GitHub
   auth_token:
-    secure: # Put encrypted GitHub token here - https://www.appveyor.com/docs/deployment/github/#provider-settings
+    secure: bV2n8suRPo/5d1Ebyd20U6+Ou5XlnEMNC6sZ3W8RW0n3zaUFiDC6x0qc+7HxeUI0
   on:
     branch: master
     APPVEYOR_REPO_TAG: true
