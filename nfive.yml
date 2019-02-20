@@ -1,0 +1,10 @@
+name: BattleRatttt/plugin-admin
+version: 1.0.0
+description: NFive Plugin
+author: BattleRatttt
+license: LGPL
+client:
+  main:
+    - BattleRatttt.PluginAdmin.Client
+  files:
+    - Overlays/PluginAdminOverlay.html
