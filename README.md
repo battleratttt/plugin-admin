@@ -8,11 +8,9 @@ NFive Plugin
 Currently Only Supports:
 - Spawning Vehicles - /car (vehicle name)
 - Delete Current Vehicle You Are In - /dv
-<<<<<<< HEAD
-- Noclip - /noclip  Q to go up, E to go down, W,A,S,D to turn and move 
-=======
-- Noclip - /noclip (a bit buggy)
->>>>>>> 240b2e09b85a51811ebecaedaade1e1378e1e8d5
+- Noclip - /noclip  ( Q to go up, E to go down, W,A,S,D to turn and move )
+
+
 
 
 ## Installation
