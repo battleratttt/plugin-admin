@@ -61,7 +61,11 @@ build:
   verbosity: minimal
 
 after_build:
+<<<<<<< HEAD
+- cmd: nfpm pack
+=======
 - ps: 7z a "$($env:APPVEYOR_PROJECT_NAME).zip" *.dll nfive.yml nfive.lock README.md LICENSE Overlays/
+>>>>>>> 240b2e09b85a51811ebecaedaade1e1378e1e8d5
 
 artifacts:
 - path: $(APPVEYOR_PROJECT_NAME).zip
@@ -70,7 +74,7 @@ deploy:
   release: $(APPVEYOR_REPO_TAG_NAME)
   provider: GitHub
   auth_token:
-    secure: # Put encrypted GitHub token here - https://www.appveyor.com/docs/deployment/github/#provider-settings
+    secure: bV2n8suRPo/5d1Ebyd20U6+Ou5XlnEMNC6sZ3W8RW0n3zaUFiDC6x0qc+7HxeUI0
   on:
     branch: master
     APPVEYOR_REPO_TAG: true

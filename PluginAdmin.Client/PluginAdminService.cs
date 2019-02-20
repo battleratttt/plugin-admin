@@ -14,20 +14,18 @@ using System.Drawing;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BattleRatttt.PluginAdmin.Client.Overlays;
 
 namespace BattleRatttt.PluginAdmin.Client
 {
 	[PublicAPI]
 	public class PluginAdminService : Service
 	{
-		private bool enabled;
 
 		public PluginAdminService(ILogger logger, ITickManager ticks, IEventManager events, IRpcHandler rpc, ICommandManager commands, OverlayManager overlay, User user) : base(logger, ticks, events, rpc, commands, overlay, user)
 		{
 			this.Commands.Register("car", new Action<string>(Car));
 			this.Commands.Register("dv", new Action(Dv));
-			this.Commands.Register("noclip", new Action(NoClip));
+			this.Commands.Register("noclip", new Action(ToggleNoclip));
 		}
 
 		private async void Car(string model)
@@ -46,77 +44,60 @@ namespace BattleRatttt.PluginAdmin.Client
 			v.Delete();
 		}
 
-		private Vector3 NoclipPosition = new Vector3();
-		private int Heading;
+		private bool NoclipEnabled = false;
+		private Vector3 NoclipPosition;
+		private float NoclipRotation;
+		private Vector3 MoveForwardOffset = new Vector3(0f, -1f, -1f);
+		private Vector3 MoveBackwardOffset = new Vector3(0f, 1f, -1f);
+		private Vector3 MoveUpOffset = new Vector3(0f, 0f, 1f);
+		private Vector3 MoveDownOffset = new Vector3(0f, 0f, -2f);
+		private float TurnOffset = 1f;
 
-		private void NoClip()
+		private void ToggleNoclip()
 		{
-			this.enabled = !this.enabled;
-			Screen.ShowNotification($"NoClip is now {(this.enabled ? "~g~enabled" : "~r~disabled")}~s~.");
-
-			if (this.enabled)
+			NoclipEnabled = !NoclipEnabled;
+			if (NoclipEnabled)
 			{
 				NoclipPosition = Game.Player.Character.Position;
-				this.Ticks.Attach(Tick);
+				NoclipRotation = Game.Player.Character.Heading;
+				this.Ticks.Attach(NoclipTick);
 			}
 			else
 			{
-				NoclipPosition = Game.Player.Character.Position;
-				this.Ticks.Detach(Tick);
+				this.Ticks.Detach(NoclipTick);
 			}
 		}
 
-		private async Task Tick()
+		private async Task NoclipTick()
 		{
-			if (this.enabled)
+			Game.Player.Character.Position = NoclipPosition;
+			Game.Player.Character.Heading = NoclipRotation;
+
+			if (Game.IsControlPressed(1, Control.MoveUpOnly))
 			{
-				Game.Player.Character.Position = NoclipPosition;
-
-				if (Game.IsControlPressed(1, Control.Phone))
-				{
-					NoclipPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0f, 0f, 1f));
-				}
-
-				if (Game.IsControlPressed(1, Control.PhoneDown))
-				{
-					NoclipPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0f, 0f, -1f));
-				}
-
-				if (Game.IsControlPressed(1, Control.FlyUpDown))
-				{
-					NoclipPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0f, 1f, 0f));
-				}
-
-				if (Game.IsControlPressed(1, Control.MoveUpOnly))
-				{
-					NoclipPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0f, -1f, 0f));
-				}
-
-				if (Game.IsControlPressed(1, Control.MoveLeftOnly))
-				{
-					Heading += 1;
-					if (Heading > 360)
-					{
-						Heading = 0;
-					}
-					Game.Player.Character.Heading = Heading;
-				}
-
-				if (Game.IsControlPressed(1, Control.FlyLeftRight))
-				{
-					Heading -= 1;
-					if (Heading < 0)
-					{
-						Heading = 360;
-					}
-					Game.Player.Character.Heading = Heading;
-				}
-
-				await Task.FromResult(0);
+				NoclipPosition = Game.Player.Character.GetOffsetPosition(MoveForwardOffset);
 			}
-			else
+			else if (Game.IsControlPressed(1, Control.MoveDownOnly))
 			{
-				this.Ticks.Detach(Tick);
+				NoclipPosition = Game.Player.Character.GetOffsetPosition(MoveBackwardOffset);
+			}
+
+			if (Game.IsControlPressed(1, Control.MoveLeftOnly))
+			{
+				NoclipRotation = NoclipRotation + TurnOffset > 360f ? 0f : NoclipRotation + TurnOffset;
+			}
+			else if (Game.IsControlPressed(1, Control.MoveRightOnly))
+			{
+				NoclipRotation = NoclipRotation - TurnOffset < 0f ? 360f : NoclipRotation - TurnOffset;
+			}
+
+			if (Game.IsControlPressed(1, Control.Cover))
+			{
+				NoclipPosition = Game.Player.Character.GetOffsetPosition(MoveUpOffset);
+			}
+			else if (Game.IsControlPressed(1, Control.Pickup))
+			{
+				NoclipPosition = Game.Player.Character.GetOffsetPosition(MoveDownOffset);
 			}
 		}
 	}
