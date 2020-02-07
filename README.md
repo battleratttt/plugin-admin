@@ -14,4 +14,4 @@ Currently Only Supports:
 
 
 ## Installation
-Install the plugin into your server from the [NFive Hub](https://hub.nfive.io/BattleRatttt/plugin-admin): `nfpm install BattleRatttt/plugin-admin`
+Install the plugin into your server from the [NFive Hub](https://hub.nfive.io/BattleRatttt/plugin-admin): `nfpm install battleratttt/plugin-admin`
